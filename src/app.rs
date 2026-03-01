@@ -1,512 +1,558 @@
 use leptos::prelude::*;
+use unicode_normalization::UnicodeNormalization;
 
 #[derive(Clone, Copy)]
 struct Question {
     id: u32,
     question: &'static str,
-    answer: &'static str,
+    answer: &'static [&'static str],
 }
 
 const QUESTIONS: [Question; 100] = [
     Question {
         id: 1,
         question: "太陽から一番近い惑星は？",
-        answer: "水星",
+        answer: &["水星", "すいせい"],
     },
     Question {
         id: 2,
         question: "1円玉は何で出来ている？",
-        answer: "アルミニウム",
+        answer: &["アルミニウム"],
     },
     Question {
         id: 3,
         question: "ギリシャの首都は？",
-        answer: "アテネ",
+        answer: &["アテネ"],
     },
     Question {
         id: 4,
         question: "日本で一番高い山は？",
-        answer: "富士山",
+        answer: &["富士山", "ふじさん"],
     },
     Question {
         id: 5,
         question: "地球の衛星の名前は？",
-        answer: "月",
+        answer: &["月", "つき"],
     },
     Question {
         id: 6,
         question: "日本の首都は？",
-        answer: "東京",
+        answer: &["東京", "とうきょう"],
     },
     Question {
         id: 7,
         question: "一年は何日？",
-        answer: "365日",
+        answer: &[
+            "365日",
+            "さんびゃくろくじゅうごにち",
+            "サンビャクロクジュウゴニチ",
+        ],
     },
     Question {
         id: 8,
         question: "水の化学式は？",
-        answer: "H2O",
+        answer: &["H2O", "えいちつーおー"],
     },
     Question {
         id: 9,
         question: "日本の国旗の色は？（赤とあと一つは？）",
-        answer: "白",
+        answer: &["白", "しろ"],
     },
     Question {
         id: 10,
         question: "1+1は？",
-        answer: "2",
+        answer: &["2", "に"],
     },
     Question {
         id: 11,
         question: "フランスの首都は？",
-        answer: "パリ",
+        answer: &["パリ"],
     },
     Question {
         id: 12,
         question: "イタリアの首都は？",
-        answer: "ローマ",
+        answer: &["ローマ"],
     },
     Question {
         id: 13,
         question: "イギリスの首都は？",
-        answer: "ロンドン",
+        answer: &["ロンドン"],
     },
     Question {
         id: 14,
         question: "アメリカの首都は？",
-        answer: "ワシントンD.C.",
+        answer: &[
+            "ワシントンD.C.",
+            "わしんとんでぃーしー",
+            "ワシントンディーシー",
+            "わしんとんD.C.",
+        ],
     },
     Question {
         id: 15,
         question: "カナダの首都は？",
-        answer: "オタワ",
+        answer: &["オタワ"],
     },
     Question {
         id: 16,
         question: "オーストラリアの首都は？",
-        answer: "キャンベラ",
+        answer: &["キャンベラ"],
     },
     Question {
         id: 17,
         question: "スペインの首都は？",
-        answer: "マドリード",
+        answer: &["マドリード"],
     },
     Question {
         id: 18,
         question: "ドイツの首都は？",
-        answer: "ベルリン",
+        answer: &["ベルリン"],
     },
     Question {
         id: 19,
         question: "ブラジルの首都は？",
-        answer: "ブラジリア",
+        answer: &["ブラジリア"],
     },
     Question {
         id: 20,
         question: "インドの首都は？",
-        answer: "ニューデリー",
+        answer: &["ニューデリー"],
     },
     Question {
         id: 21,
         question: "1週間は何日？",
-        answer: "7日",
+        answer: &["7日", "しちにち", "なのか"],
     },
     Question {
         id: 22,
         question: "1時間は何分？",
-        answer: "60分",
+        answer: &[
+            "60分",
+            "ろくじゅっぷん",
+            "ろくじっぷん",
+            "ロクジュップン",
+            "ロクジップン",
+        ],
     },
     Question {
         id: 23,
         question: "1分は何秒？",
-        answer: "60秒",
+        answer: &["60秒", "ろくじゅうびょう"],
     },
     Question {
         id: 24,
         question: "1メートルは何センチメートル？",
-        answer: "100センチメートル",
+        answer: &[
+            "100センチメートル",
+            "ひゃくせんちめーとる",
+            "ヒャクセンチメートル",
+            "100せんちめーとる",
+        ],
     },
     Question {
         id: 25,
         question: "1キロメートルは何メートル？",
-        answer: "1000メートル",
+        answer: &[
+            "1000メートル",
+            "せんめーとる",
+            "センメートル",
+            "1000めーとる",
+        ],
     },
     Question {
         id: 26,
         question: "円周率の最初の2桁は？",
-        answer: "3.14",
+        answer: &["3.14", "さんてんいちよん"],
     },
     Question {
         id: 27,
         question: "日本で一番長い川は？",
-        answer: "信濃川",
+        answer: &["信濃川", "しなのがわ"],
     },
     Question {
         id: 28,
         question: "日本で一番大きい湖は？",
-        answer: "琵琶湖",
+        answer: &["琵琶湖", "びわこ"],
     },
     Question {
         id: 29,
         question: "人間の体温は平均何度？",
-        answer: "36度",
+        answer: &["36度", "さんじゅうろくど"],
     },
     Question {
         id: 30,
         question: "オリンピックは何年に一度？",
-        answer: "4年",
+        answer: &["4年", "よねん"],
     },
     Question {
         id: 31,
         question: "サッカーは一チーム何人？",
-        answer: "11人",
+        answer: &["11人", "じゅういちにん"],
     },
     Question {
         id: 32,
         question: "野球は一チーム何人？",
-        answer: "9人",
+        answer: &["9人", "きゅうにん"],
     },
     Question {
         id: 33,
         question: "バスケットボールは一チーム何人？",
-        answer: "5人",
+        answer: &["5人", "ごにん"],
     },
     Question {
         id: 34,
         question: "バレーボールは一チーム何人？",
-        answer: "6人",
+        answer: &["6人", "ろくにん"],
     },
     Question {
         id: 35,
         question: "将棋の駒は何種類？",
-        answer: "8種類",
+        answer: &["8種類", "はっしゅるい"],
     },
     Question {
         id: 36,
         question: "日本の都道府県の数は？",
-        answer: "47",
+        answer: &["47", "よんじゅうなな"],
     },
     Question {
         id: 37,
         question: "北海道の県庁所在地は？",
-        answer: "札幌",
+        answer: &["札幌", "さっぽろ"],
     },
     Question {
         id: 38,
         question: "沖縄の県庁所在地は？",
-        answer: "那覇",
+        answer: &["那覇", "なは"],
     },
     Question {
         id: 39,
         question: "富士山は何県にある？（2県のうち1つ）",
-        answer: "静岡県",
+        answer: &[
+            "静岡県",
+            "しずおかけん",
+            "シズオカケン",
+            "山梨県",
+            "やまなしけん",
+            "ヤマナシケン",
+        ],
     },
     Question {
         id: 40,
         question: "日本で一番人口が多い都道府県は？",
-        answer: "東京都",
+        answer: &["東京都", "とうきょうと"],
     },
     Question {
         id: 41,
         question: "東京スカイツリーの高さは何メートル？",
-        answer: "634メートル",
+        answer: &[
+            "634メートル",
+            "ろっぴゃくさんじゅうよんめーとる",
+            "ロッピャクサンジュウヨンメートル",
+            "634めーとる",
+        ],
     },
     Question {
         id: 42,
         question: "日本の国歌は？",
-        answer: "君が代",
+        answer: &["君が代", "きみがよ"],
     },
     Question {
         id: 43,
         question: "日本の国花は？",
-        answer: "桜",
+        answer: &["桜", "さくら"],
     },
     Question {
         id: 44,
         question: "12の干支の最初は？",
-        answer: "子（ねずみ）",
+        answer: &["子（ねずみ）", "ねずみ"],
     },
     Question {
         id: 45,
         question: "12の干支の最後は？",
-        answer: "亥（いのしし）",
+        answer: &["亥（いのしし）", "いのしし"],
     },
     Question {
         id: 46,
         question: "春夏秋冬で一番最初の季節は？",
-        answer: "春",
+        answer: &["春", "はる"],
     },
     Question {
         id: 47,
         question: "一月は何日まである？",
-        answer: "31日",
+        answer: &["31日", "さんじゅういちにち"],
     },
     Question {
         id: 48,
         question: "二月は何日まである？（平年）",
-        answer: "28日",
+        answer: &["28日", "にじゅうはちにち"],
     },
     Question {
         id: 49,
         question: "虹は何色？",
-        answer: "7色",
+        answer: &["7色", "なないろ"],
     },
     Question {
         id: 50,
         question: "太陽系の惑星の数は？",
-        answer: "8個",
+        answer: &["8個", "はっこ"],
     },
     Question {
         id: 51,
         question: "地球は太陽の周りを何日で一周する？",
-        answer: "365日",
+        answer: &[
+            "365日",
+            "さんびゃくろくじゅうごにち",
+            "サンビャクロクジュウゴニチ",
+        ],
     },
     Question {
         id: 52,
         question: "北極にいる白いクマは？",
-        answer: "ホッキョクグマ",
+        answer: &["ホッキョクグマ"],
     },
     Question {
         id: 53,
         question: "世界で一番高い山は？",
-        answer: "エベレスト",
+        answer: &["エベレスト"],
     },
     Question {
         id: 54,
         question: "世界で一番大きい海は？",
-        answer: "太平洋",
+        answer: &["太平洋", "たいへいよう"],
     },
     Question {
         id: 55,
         question: "世界で一番長い川は？",
-        answer: "ナイル川",
+        answer: &["ナイル川", "ないるがわ"],
     },
     Question {
         id: 56,
         question: "日本の三大祭りの一つ、京都の祭りは？",
-        answer: "祇園祭",
+        answer: &["祇園祭", "ぎおんまつり"],
     },
     Question {
         id: 57,
         question: "五輪のマークはいくつの輪？",
-        answer: "5つ",
+        answer: &["5つ", "いつつ"],
     },
     Question {
         id: 58,
         question: "日本で一番面積が大きい都道府県は？",
-        answer: "北海道",
+        answer: &["北海道", "ほっかいどう"],
     },
     Question {
         id: 59,
         question: "日本で一番面積が小さい都道府県は？",
-        answer: "香川県",
+        answer: &["香川県", "かがわけん"],
     },
     Question {
         id: 60,
         question: "日本三景の一つ、宮城県にあるのは？",
-        answer: "松島",
+        answer: &["松島", "まつしま"],
     },
     Question {
         id: 61,
         question: "富士五湖の中で一番大きい湖は？",
-        answer: "山中湖",
+        answer: &["山中湖", "やまなかこ"],
     },
     Question {
         id: 62,
         question: "光の三原色の一つは？",
-        answer: "赤",
+        answer: &["赤", "あか"],
     },
     Question {
         id: 63,
         question: "日本の硬貨で一番大きい金額は？",
-        answer: "500円",
+        answer: &["500円", "ごひゃくえん"],
     },
     Question {
         id: 64,
         question: "日本の紙幣で一番大きい金額は？",
-        answer: "1万円",
+        answer: &["1万円", "いちまんえん"],
     },
     Question {
         id: 65,
         question: "トランプは全部で何枚？",
-        answer: "52枚",
+        answer: &["52枚", "ごじゅうにまい"],
     },
     Question {
         id: 66,
         question: "ピアノの鍵盤は白黒合わせて何個？",
-        answer: "88個",
+        answer: &["88個", "はちじゅうはっこ"],
     },
     Question {
         id: 67,
         question: "人間の歯は全部で何本？",
-        answer: "32本",
+        answer: &["32本", "さんじゅうにほん"],
     },
     Question {
         id: 68,
         question: "人間の指は片手で何本？",
-        answer: "5本",
+        answer: &["5本", "ごほん"],
     },
     Question {
         id: 69,
         question: "三角形の角の数は？",
-        answer: "3つ",
+        answer: &["3つ", "みっつ"],
     },
     Question {
         id: 70,
         question: "四角形の角の数は？",
-        answer: "4つ",
+        answer: &["4つ", "よっつ"],
     },
     Question {
         id: 71,
         question: "正六角形の角の数は？",
-        answer: "6つ",
+        answer: &["6つ", "むっつ"],
     },
     Question {
         id: 72,
         question: "音楽の三大要素の一つは？",
-        answer: "リズム",
+        answer: &["リズム"],
     },
     Question {
         id: 73,
         question: "日本の三権分立の一つは？",
-        answer: "立法",
+        answer: &["立法", "りっぽう"],
     },
     Question {
         id: 74,
         question: "衆議院の任期は何年？",
-        answer: "4年",
+        answer: &["4年", "よねん"],
     },
     Question {
         id: 75,
         question: "参議院の任期は何年？",
-        answer: "6年",
+        answer: &["6年", "ろくねん"],
     },
     Question {
         id: 76,
         question: "日本の義務教育は何年間？",
-        answer: "9年",
+        answer: &["9年", "きゅうねん"],
     },
     Question {
         id: 77,
         question: "小学校は何年生まで？",
-        answer: "6年生",
+        answer: &["6年生", "ろくねんせい"],
     },
     Question {
         id: 78,
         question: "中学校は何年生まで？",
-        answer: "3年生",
+        answer: &["3年生", "さんねんせい"],
     },
     Question {
         id: 79,
         question: "高校は何年生まで？",
-        answer: "3年生",
+        answer: &["3年生", "さんねんせい"],
     },
     Question {
         id: 80,
         question: "成人年齢は何歳？",
-        answer: "18歳",
+        answer: &["18歳", "じゅうはっさい"],
     },
     Question {
         id: 81,
         question: "選挙権は何歳から？",
-        answer: "18歳",
+        answer: &["18歳", "じゅうはっさい"],
     },
     Question {
         id: 82,
         question: "お酒を飲めるのは何歳から？",
-        answer: "20歳",
+        answer: &["20歳", "はたち", "にじゅっさい"],
     },
     Question {
         id: 83,
         question: "タバコを吸えるのは何歳から？",
-        answer: "20歳",
+        answer: &["20歳", "はたち", "にじゅっさい"],
     },
     Question {
         id: 84,
         question: "車の運転免許は何歳から？",
-        answer: "18歳",
+        answer: &["18歳", "じゅうはっさい"],
     },
     Question {
         id: 85,
         question: "日本の国技は？",
-        answer: "相撲",
+        answer: &["相撲", "すもう"],
     },
     Question {
         id: 86,
         question: "相撲の最高位は？",
-        answer: "横綱",
+        answer: &["横綱", "よこづな"],
     },
     Question {
         id: 87,
         question: "囲碁の盤は何路盤が標準？",
-        answer: "19路盤",
+        answer: &["19路盤", "じゅうきゅうろばん"],
     },
     Question {
         id: 88,
         question: "将棋盤のマス目は縦横何マス？",
-        answer: "9マス",
+        answer: &["9マス", "きゅうます"],
     },
     Question {
         id: 89,
         question: "金メダルは何位？",
-        answer: "1位",
+        answer: &["1位", "いちい"],
     },
     Question {
         id: 90,
         question: "銀メダルは何位？",
-        answer: "2位",
+        answer: &["2位", "にい"],
     },
     Question {
         id: 91,
         question: "銅メダルは何位？",
-        answer: "3位",
+        answer: &["3位", "さんい"],
     },
     Question {
         id: 92,
         question: "1ダースは何個？",
-        answer: "12個",
+        answer: &["12個", "じゅうにこ"],
     },
     Question {
         id: 93,
         question: "1グロスは何ダース？",
-        answer: "12ダース",
+        answer: &["12ダース", "じゅうにだーす"],
     },
     Question {
         id: 94,
         question: "水は何度で凍る？",
-        answer: "0度",
+        answer: &["0度", "れいど"],
     },
     Question {
         id: 95,
         question: "水は何度で沸騰する？",
-        answer: "100度",
+        answer: &["100度", "ひゃくど"],
     },
     Question {
         id: 96,
         question: "日本のお正月は何月何日？",
-        answer: "1月1日",
+        answer: &["1月1日", "いちがつついたち"],
     },
     Question {
         id: 97,
         question: "クリスマスは何月何日？",
-        answer: "12月25日",
+        answer: &[
+            "12月25日",
+            "じゅうにがつにじゅうごにち",
+            "ジュウニガツニジュウゴニチ",
+        ],
     },
     Question {
         id: 98,
         question: "バレンタインデーは何月何日？",
-        answer: "2月14日",
+        answer: &["2月14日", "にがつじゅうよっか"],
     },
     Question {
         id: 99,
         question: "ひな祭りは何月何日？",
-        answer: "3月3日",
+        answer: &["3月3日", "さんがつみっか"],
     },
     Question {
         id: 100,
         question: "こどもの日は何月何日？",
-        answer: "5月5日",
+        answer: &["5月5日", "ごがついつか"],
     },
 ];
 
@@ -522,24 +568,39 @@ enum Screen {
 }
 
 fn normalize_answer(answer: &str) -> String {
-    answer
+    let normalized = answer
+        .nfkc()
+        .collect::<String>()
         .trim()
         .to_lowercase()
         .replace(' ', "")
-        .replace('　', "")
-        .replace('(', "")
-        .replace(')', "")
-        .replace('（', "")
-        .replace('）', "")
+        .replace('　', "");
+    katakana_to_hiragana(&normalized)
 }
 
-fn is_correct_answer(user_answer: &str, correct_answer: &str) -> bool {
-    let normalized = normalize_answer(user_answer);
-    let candidates = correct_answer.split('、').map(normalize_answer);
+fn katakana_to_hiragana(input: &str) -> String {
+    input
+        .chars()
+        .map(|c| {
+            let code = c as u32;
+            if (0x30A1..=0x30F6).contains(&code) {
+                // Katakana -> Hiragana
+                char::from_u32(code - 0x60).unwrap_or(c)
+            } else {
+                c
+            }
+        })
+        .collect()
+}
 
-    candidates.into_iter().any(|correct| {
-        normalized == correct || correct.contains(&normalized) || normalized.contains(&correct)
-    })
+fn is_correct_answer(user_answer: &str, correct_answers: &[&str]) -> bool {
+    let normalized = normalize_answer(user_answer);
+    correct_answers
+        .iter()
+        .map(|a| normalize_answer(a))
+        .any(|correct| {
+            normalized == correct || correct.contains(&normalized) || normalized.contains(&correct)
+        })
 }
 
 #[component]
@@ -1047,7 +1108,7 @@ pub fn App() -> impl IntoView {
                                                                     <h3>{question.question}</h3>
                                                                     <div class="correct-box">
                                                                         <small>"正解"</small>
-                                                                        <strong>{question.answer}</strong>
+                                                                        <strong>{question.answer.first().copied().unwrap_or("")}</strong>
                                                                     </div>
                                                                 </div>
                                                             }
@@ -1139,5 +1200,58 @@ pub fn App() -> impl IntoView {
                 }
             }}
         </main>
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::normalize_answer;
+
+    #[test]
+    fn normalize_answer_removes_spaces() {
+        let input = "  東 京　";
+        assert_eq!(normalize_answer(input), "東京");
+    }
+
+    #[test]
+    fn normalize_answer_lowercases_ascii() {
+        let input = "  H2O ";
+        assert_eq!(normalize_answer(input), "h2o");
+    }
+
+    #[test]
+    fn normalize_answer_keeps_normalized_ascii_input() {
+        let input = "  h2o ";
+        assert_eq!(normalize_answer(input), "h2o");
+    }
+
+    #[test]
+    fn normalize_answer_normalizes_fullwidth_digits() {
+        let input = "３６５日";
+        assert_eq!(normalize_answer(input), "365日");
+    }
+
+    #[test]
+    fn normalize_answer_keeps_normalized_digit_input() {
+        let input = "365ニチ";
+        assert_eq!(normalize_answer(input), "365にち");
+    }
+
+    #[test]
+    fn normalize_answer_normalizes_halfwidth_katakana() {
+        let input = "ﾎｯｶｲﾄﾞｳ";
+        assert_eq!(normalize_answer(input), "ほっかいどう");
+    }
+
+    #[test]
+    fn normalize_answer_keeps_normalized_katakana_input() {
+        let input = "ホッカイ ドウ";
+        assert_eq!(normalize_answer(input), "ほっかいどう");
+    }
+
+    #[test]
+    fn normalize_answer_keeps_normalized_hiragana_input() {
+        let input = "ほっ かいどう";
+        assert_eq!(normalize_answer(input), "ほっかいどう");
     }
 }
