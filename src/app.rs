@@ -598,9 +598,7 @@ fn is_correct_answer(user_answer: &str, correct_answers: &[&str]) -> bool {
     correct_answers
         .iter()
         .map(|a| normalize_answer(a))
-        .any(|correct| {
-            normalized == correct || correct.contains(&normalized) || normalized.contains(&correct)
-        })
+        .any(|correct| normalized == correct)
 }
 
 #[component]
@@ -1205,53 +1203,96 @@ pub fn App() -> impl IntoView {
 
 #[cfg(test)]
 mod tests {
-    use super::normalize_answer;
+    mod normalize_answer_tests {
+        use super::super::normalize_answer;
 
-    #[test]
-    fn normalize_answer_removes_spaces() {
-        let input = "  東 京　";
-        assert_eq!(normalize_answer(input), "東京");
+        #[test]
+        fn normalize_answer_removes_spaces() {
+            let input = "  東 京　";
+            assert_eq!(normalize_answer(input), "東京");
+        }
+
+        #[test]
+        fn normalize_answer_lowercases_ascii() {
+            let input = "  H2O ";
+            assert_eq!(normalize_answer(input), "h2o");
+        }
+
+        #[test]
+        fn normalize_answer_keeps_normalized_ascii_input() {
+            let input = "  h2o ";
+            assert_eq!(normalize_answer(input), "h2o");
+        }
+
+        #[test]
+        fn normalize_answer_normalizes_fullwidth_digits() {
+            let input = "３６５日";
+            assert_eq!(normalize_answer(input), "365日");
+        }
+
+        #[test]
+        fn normalize_answer_keeps_normalized_digit_input() {
+            let input = "365ニチ";
+            assert_eq!(normalize_answer(input), "365にち");
+        }
+
+        #[test]
+        fn normalize_answer_normalizes_halfwidth_katakana() {
+            let input = "ﾎｯｶｲﾄﾞｳ";
+            assert_eq!(normalize_answer(input), "ほっかいどう");
+        }
+
+        #[test]
+        fn normalize_answer_keeps_normalized_katakana_input() {
+            let input = "ホッカイ ドウ";
+            assert_eq!(normalize_answer(input), "ほっかいどう");
+        }
+
+        #[test]
+        fn normalize_answer_keeps_normalized_hiragana_input() {
+            let input = "ほっ かいどう";
+            assert_eq!(normalize_answer(input), "ほっかいどう");
+        }
+
+        #[test]
+        fn normalize_answer_keeps_hiragana_prolonged_sound_mark() {
+            let input = "すいせー";
+            assert_eq!(normalize_answer(input), "すいせー");
+        }
+
+        #[test]
+        fn normalize_answer_keeps_hiragana_hyphen() {
+            let input = "すいせ-";
+            assert_eq!(normalize_answer(input), "すいせ-");
+        }
     }
 
-    #[test]
-    fn normalize_answer_lowercases_ascii() {
-        let input = "  H2O ";
-        assert_eq!(normalize_answer(input), "h2o");
-    }
+    mod is_correct_answer_tests {
+        use super::super::is_correct_answer;
 
-    #[test]
-    fn normalize_answer_keeps_normalized_ascii_input() {
-        let input = "  h2o ";
-        assert_eq!(normalize_answer(input), "h2o");
-    }
+        #[test]
+        fn matches_exact_kanji_answer() {
+            assert!(is_correct_answer("水星", &["水星", "すいせい"]));
+        }
 
-    #[test]
-    fn normalize_answer_normalizes_fullwidth_digits() {
-        let input = "３６５日";
-        assert_eq!(normalize_answer(input), "365日");
-    }
+        #[test]
+        fn matches_katakana_variant_via_normalization() {
+            assert!(is_correct_answer("スイセイ", &["水星", "すいせい"]));
+        }
 
-    #[test]
-    fn normalize_answer_keeps_normalized_digit_input() {
-        let input = "365ニチ";
-        assert_eq!(normalize_answer(input), "365にち");
-    }
+        #[test]
+        fn matches_partial_kanji_prefix() {
+            assert!(!is_correct_answer("水", &["水星", "すいせい"]));
+        }
 
-    #[test]
-    fn normalize_answer_normalizes_halfwidth_katakana() {
-        let input = "ﾎｯｶｲﾄﾞｳ";
-        assert_eq!(normalize_answer(input), "ほっかいどう");
-    }
+        #[test]
+        fn matches_partial_hiragana_prefix() {
+            assert!(!is_correct_answer("すいせ", &["水星", "すいせい"]));
+        }
 
-    #[test]
-    fn normalize_answer_keeps_normalized_katakana_input() {
-        let input = "ホッカイ ドウ";
-        assert_eq!(normalize_answer(input), "ほっかいどう");
-    }
-
-    #[test]
-    fn normalize_answer_keeps_normalized_hiragana_input() {
-        let input = "ほっ かいどう";
-        assert_eq!(normalize_answer(input), "ほっかいどう");
+        #[test]
+        fn returns_false_for_unmatched_answer() {
+            assert!(!is_correct_answer("金星", &["水星", "すいせい"]));
+        }
     }
 }
