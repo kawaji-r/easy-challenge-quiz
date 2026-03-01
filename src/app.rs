@@ -1182,8 +1182,7 @@ pub fn App() -> impl IntoView {
 
                                 <section class="card clear-card">
                                     <p>
-                                        "さすが『できて当たり前』の問題！"<br/>
-                                        "チームワークばっちりです！"
+                                        "チームワークばっちり！"
                                     </p>
                                     <p class="party">"🎉"</p>
                                 </section>
