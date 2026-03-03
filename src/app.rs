@@ -704,7 +704,7 @@ pub fn App() -> impl IntoView {
                                     <h1 class="hero-title">
                                         "できて当たり前"<br/>"クイズ"
                                     </h1>
-                                    <p class="hero-subtitle">"みんなで答えられて当然の問題に挑戦！"</p>
+                                    <p class="hero-subtitle">"みんなで、答えられて当然の問題に挑戦！"</p>
                                 </section>
 
                                 <section class="card">
@@ -741,7 +741,7 @@ pub fn App() -> impl IntoView {
                                 </section>
 
                                 <section class="warn-box">
-                                    "一人でも間違えたら最初からやり直し。みんなが知っている問題を選ぼう！"
+                                    "一人でも間違えたら最初からやり直し。みんなが知っていそうな問題を選ぼう！"
                                 </section>
 
                                 <button class="primary-btn" on:click=move |_| set_screen.set(Screen::NameInput)>
