@@ -672,11 +672,11 @@ pub fn App() -> impl IntoView {
         set_round_result.set(Some(all_correct));
 
         if all_correct {
-            let new_streak = success_streak.get_untracked() + 1;
-            set_success_streak.set(new_streak);
+            // 全員正解なら、成功数を増やして次のプレイヤーへ
+            set_success_streak.update(|s| *s += 1);
             set_answered_questions.update(|answered| answered.push(question.id));
 
-            if new_streak >= 5 {
+            if success_streak.get() >= 5 {
                 set_screen.set(Screen::Clear);
                 return;
             }
