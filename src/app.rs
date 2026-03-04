@@ -655,12 +655,15 @@ pub fn App() -> impl IntoView {
             && current_answers.iter().all(|a| !a.trim().is_empty())
     };
 
+    // 「結果を確定」ボタンを押したときの処理
     let confirm_round = move || {
+        // 選択された問題を取得
         let question = match selected_question() {
             Some(q) => q,
             None => return,
         };
 
+        // 全員の回答が正解かどうかを判定
         let all_correct = answers
             .get()
             .iter()
