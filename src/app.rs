@@ -638,6 +638,18 @@ fn is_correct_answer(user_answer: &str, correct_answers: &[&str]) -> bool {
         .any(|correct| normalized == correct)
 }
 
+fn should_debug_force_clear(
+    player_count: usize,
+    selected_question_idx: Option<usize>,
+    answers: &[String],
+) -> bool {
+    player_count == 2
+        && selected_question_idx == Some(0)
+        && answers.len() == 2
+        && normalize_answer(&answers[0]) == "ろ"
+        && normalize_answer(&answers[1]) == "で"
+}
+
 #[component]
 pub fn App() -> impl IntoView {
     let (screen, set_screen) = signal(Screen::Home);
@@ -686,6 +698,18 @@ pub fn App() -> impl IntoView {
 
     // 「結果を確定」ボタンを押したときの処理
     let confirm_round = move || {
+        let current_answers = answers.get();
+
+        if should_debug_force_clear(
+            player_count.get_untracked(),
+            selected_question_idx.get_untracked(),
+            &current_answers,
+        ) {
+            set_round_result.set(Some(true));
+            set_screen.set(Screen::Clear);
+            return;
+        }
+
         // 選択された問題を取得
         let question = match selected_question() {
             Some(q) => q,
@@ -693,8 +717,7 @@ pub fn App() -> impl IntoView {
         };
 
         // 全員の回答が正解かどうかを判定
-        let all_correct = answers
-            .get()
+        let all_correct = current_answers
             .iter()
             .all(|answer| is_correct_answer(answer, question.answer));
 
@@ -1204,7 +1227,14 @@ pub fn App() -> impl IntoView {
                             <div class="screen-inner center-layout">
                                 <div class="clear-icon">"🏆"</div>
                                 <h1 class="hero-title clear">"ゲームクリア！"</h1>
-                                <p class="clear-text">"5人全員で5問連続正解を達成しました"</p>
+                                <p class="clear-text">
+                                    {move || {
+                                        format!(
+                                            "{}人全員で5問連続正解を達成しました",
+                                            player_count.get()
+                                        )
+                                    }}
+                                </p>
 
                                 <section class="card clear-card">
                                     <p>
@@ -1318,6 +1348,34 @@ mod tests {
         #[test]
         fn returns_false_for_unmatched_answer() {
             assert!(!is_correct_answer("金星", &["水星", "すいせい"]));
+        }
+    }
+
+    mod should_debug_force_clear_tests {
+        use super::super::should_debug_force_clear;
+
+        #[test]
+        fn returns_true_only_for_debug_pattern() {
+            let answers = vec!["ろ".to_string(), "で".to_string()];
+            assert!(should_debug_force_clear(2, Some(0), &answers));
+        }
+
+        #[test]
+        fn returns_false_when_player_count_is_not_two() {
+            let answers = vec!["ろ".to_string(), "で".to_string()];
+            assert!(!should_debug_force_clear(3, Some(0), &answers));
+        }
+
+        #[test]
+        fn returns_false_when_question_is_not_first() {
+            let answers = vec!["ろ".to_string(), "で".to_string()];
+            assert!(!should_debug_force_clear(2, Some(1), &answers));
+        }
+
+        #[test]
+        fn returns_false_when_answers_do_not_match_debug_pattern() {
+            let answers = vec!["ろ".to_string(), "ど".to_string()];
+            assert!(!should_debug_force_clear(2, Some(0), &answers));
         }
     }
 
