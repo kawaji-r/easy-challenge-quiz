@@ -567,6 +567,27 @@ enum Screen {
     Clear,
 }
 
+fn default_player_name(index: usize) -> String {
+    format!("プレイヤー{}", index + 1)
+}
+
+fn resize_player_names(current_names: &[String], new_count: usize) -> Vec<String> {
+    let mut updated = (0..new_count).map(default_player_name).collect::<Vec<String>>();
+
+    for (idx, name) in current_names.iter().enumerate().take(new_count) {
+        updated[idx] = name.clone();
+    }
+
+    updated
+}
+
+fn player_name_or_default(player_names: &[String], index: usize) -> String {
+    player_names
+        .get(index)
+        .cloned()
+        .unwrap_or_else(|| default_player_name(index))
+}
+
 fn normalize_answer(answer: &str) -> String {
     let normalized = answer
         .nfkc()
@@ -623,14 +644,7 @@ pub fn App() -> impl IntoView {
     let update_player_count = move |new_count: usize| {
         set_player_count.set(new_count);
         set_player_names.update(|names| {
-            let mut updated = (1..=new_count)
-                .map(|i| format!("プレイヤー{i}"))
-                .collect::<Vec<String>>();
-
-            for (idx, name) in names.iter().enumerate().take(new_count) {
-                updated[idx] = name.clone();
-            }
-            *names = updated;
+            *names = resize_player_names(names, new_count);
         });
     };
 
@@ -848,10 +862,7 @@ pub fn App() -> impl IntoView {
                                     <p class="chooser-name">
                                         {move || {
                                             let names = player_names.get();
-                                            names
-                                                .get(current_player.get())
-                                                .cloned()
-                                                .unwrap_or_else(|| "プレイヤー1".to_string())
+                                            player_name_or_default(&names, current_player.get())
                                         }}
                                     </p>
                                 </section>
@@ -984,13 +995,10 @@ pub fn App() -> impl IntoView {
                                                                     >
                                                                         <span>
                                                                             {move || {
-                                                                                player_names
-                                                                                    .get()
-                                                                                    .get(idx)
-                                                                                    .cloned()
-                                                                                    .unwrap_or_else(|| {
-                                                                                        format!("プレイヤー{}", idx + 1)
-                                                                                    })
+                                                                                player_name_or_default(
+                                                                                    &player_names.get(),
+                                                                                    idx,
+                                                                                )
                                                                             }}
                                                                             " の回答"
                                                                         </span>
@@ -1036,7 +1044,7 @@ pub fn App() -> impl IntoView {
                                                                         .get()
                                                                         .get(idx)
                                                                         .cloned())
-                                                                    .unwrap_or_else(|| "プレイヤー".to_string())
+                                                                    .unwrap_or_else(|| default_player_name(0))
                                                             }}
                                                         </h3>
                                                         <p>"他の人は見ないでください"</p>
@@ -1140,13 +1148,10 @@ pub fn App() -> impl IntoView {
                                                                         <div>
                                                                             <p class="player-label">
                                                                                 {move || {
-                                                                                    player_names
-                                                                                        .get()
-                                                                                        .get(idx)
-                                                                                        .cloned()
-                                                                                        .unwrap_or_else(|| {
-                                                                                            format!("プレイヤー{}", idx + 1)
-                                                                                        })
+                                                                                    player_name_or_default(
+                                                                                        &player_names.get(),
+                                                                                        idx,
+                                                                                    )
                                                                                 }}
                                                                             </p>
                                                                             <p class="player-answer">{answer}</p>
@@ -1295,6 +1300,44 @@ mod tests {
         #[test]
         fn returns_false_for_unmatched_answer() {
             assert!(!is_correct_answer("金星", &["水星", "すいせい"]));
+        }
+    }
+
+    mod player_name_tests {
+        use super::super::{player_name_or_default, resize_player_names};
+
+        #[test]
+        fn resize_player_names_preserves_existing_entries() {
+            let current = vec!["Alice".to_string(), "Bob".to_string(), "Carol".to_string()];
+            let resized = resize_player_names(&current, 2);
+            assert_eq!(resized, vec!["Alice".to_string(), "Bob".to_string()]);
+        }
+
+        #[test]
+        fn resize_player_names_fills_new_slots_with_defaults() {
+            let current = vec!["Alice".to_string(), "Bob".to_string()];
+            let resized = resize_player_names(&current, 4);
+            assert_eq!(
+                resized,
+                vec![
+                    "Alice".to_string(),
+                    "Bob".to_string(),
+                    "プレイヤー3".to_string(),
+                    "プレイヤー4".to_string()
+                ]
+            );
+        }
+
+        #[test]
+        fn player_name_or_default_returns_custom_name_when_present() {
+            let names = vec!["Alice".to_string(), "Bob".to_string()];
+            assert_eq!(player_name_or_default(&names, 1), "Bob".to_string());
+        }
+
+        #[test]
+        fn player_name_or_default_returns_default_when_missing() {
+            let names = vec!["Alice".to_string()];
+            assert_eq!(player_name_or_default(&names, 2), "プレイヤー3".to_string());
         }
     }
 }
