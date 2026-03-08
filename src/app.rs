@@ -556,7 +556,7 @@ const QUESTIONS: [Question; 100] = [
     },
 ];
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Screen {
     Home,
     NameInput,
@@ -650,6 +650,80 @@ fn should_debug_force_clear(
         && normalize_answer(&answers[1]) == "で"
 }
 
+fn selected_question_by_idx(selected_question_idx: Option<usize>) -> Option<Question> {
+    selected_question_idx.and_then(|idx| QUESTIONS.get(idx).copied())
+}
+
+struct RoundStateUpdate {
+    round_result: Option<bool>,
+    success_streak: usize,
+    current_player: usize,
+    answered_questions: Vec<u32>,
+    screen: Screen,
+    should_reset_round_inputs: bool,
+}
+
+fn evaluate_confirm_round(
+    player_count: usize,
+    selected_question_idx: Option<usize>,
+    answers: &[String],
+    success_streak: usize,
+    current_player: usize,
+    answered_questions: &[u32],
+) -> Option<RoundStateUpdate> {
+    if should_debug_force_clear(player_count, selected_question_idx, answers) {
+        return Some(RoundStateUpdate {
+            round_result: Some(true),
+            success_streak,
+            current_player,
+            answered_questions: answered_questions.to_vec(),
+            screen: Screen::Clear,
+            should_reset_round_inputs: false,
+        });
+    }
+
+    let question = selected_question_by_idx(selected_question_idx)?;
+    let all_correct = answers
+        .iter()
+        .all(|answer| is_correct_answer(answer, question.answer));
+
+    if all_correct {
+        let next_success_streak = success_streak + 1;
+        let mut next_answered_questions = answered_questions.to_vec();
+        next_answered_questions.push(question.id);
+
+        if next_success_streak >= 5 {
+            return Some(RoundStateUpdate {
+                round_result: Some(true),
+                success_streak: next_success_streak,
+                current_player,
+                answered_questions: next_answered_questions,
+                screen: Screen::Clear,
+                should_reset_round_inputs: false,
+            });
+        }
+
+        let next_player = next_player_index(current_player, player_count);
+        Some(RoundStateUpdate {
+            round_result: Some(true),
+            success_streak: next_success_streak,
+            current_player: next_player,
+            answered_questions: next_answered_questions,
+            screen: Screen::GameSelect,
+            should_reset_round_inputs: true,
+        })
+    } else {
+        Some(RoundStateUpdate {
+            round_result: Some(false),
+            success_streak: 0,
+            current_player: 0,
+            answered_questions: Vec::new(),
+            screen: Screen::GameSelect,
+            should_reset_round_inputs: true,
+        })
+    }
+}
+
 #[component]
 pub fn App() -> impl IntoView {
     let (screen, set_screen) = signal(Screen::Home);
@@ -688,7 +762,7 @@ pub fn App() -> impl IntoView {
         set_screen.set(Screen::GameSelect);
     };
 
-    let selected_question = move || selected_question_idx.get().map(|idx| QUESTIONS[idx]);
+    let selected_question = move || selected_question_by_idx(selected_question_idx.get());
 
     let all_answered = move || {
         let player_total = player_count.get();
@@ -699,56 +773,30 @@ pub fn App() -> impl IntoView {
     // 「結果を確定」ボタンを押したときの処理
     let confirm_round = move || {
         let current_answers = answers.get();
-
-        if should_debug_force_clear(
+        let update = match evaluate_confirm_round(
             player_count.get_untracked(),
             selected_question_idx.get_untracked(),
             &current_answers,
+            success_streak.get_untracked(),
+            current_player.get_untracked(),
+            &answered_questions.get_untracked(),
         ) {
-            set_round_result.set(Some(true));
-            set_screen.set(Screen::Clear);
-            return;
-        }
-
-        // 選択された問題を取得
-        let question = match selected_question() {
-            Some(q) => q,
+            Some(update) => update,
             None => return,
         };
 
-        // 全員の回答が正解かどうかを判定
-        let all_correct = current_answers
-            .iter()
-            .all(|answer| is_correct_answer(answer, question.answer));
+        set_round_result.set(update.round_result);
+        set_success_streak.set(update.success_streak);
+        set_current_player.set(update.current_player);
+        set_answered_questions.set(update.answered_questions);
+        set_screen.set(update.screen);
 
-        set_round_result.set(Some(all_correct));
-
-        if all_correct {
-            // 全員正解なら、成功数を増やして次のプレイヤーへ
-            set_success_streak.update(|s| *s += 1);
-            set_answered_questions.update(|answered| answered.push(question.id));
-
-            if success_streak.get() >= 5 {
-                set_screen.set(Screen::Clear);
-                return;
-            }
-
-            let next_player = next_player_index(
-                current_player.get_untracked(),
-                player_count.get_untracked(),
-            );
-            set_current_player.set(next_player);
-        } else {
-            set_success_streak.set(0);
-            set_current_player.set(0);
-            set_answered_questions.set(Vec::new());
+        if update.should_reset_round_inputs {
+            set_selected_question_idx.set(None);
+            set_answers.set(Vec::new());
+            set_input_player_idx.set(None);
+            set_temp_answer.set(String::new());
         }
-
-        set_selected_question_idx.set(None);
-        set_answers.set(Vec::new());
-        set_input_player_idx.set(None);
-        set_temp_answer.set(String::new());
-        set_screen.set(Screen::GameSelect);
     };
 
     view! {
@@ -1376,6 +1424,95 @@ mod tests {
         fn returns_false_when_answers_do_not_match_debug_pattern() {
             let answers = vec!["ろ".to_string(), "ど".to_string()];
             assert!(!should_debug_force_clear(2, Some(0), &answers));
+        }
+    }
+
+    mod selected_question_tests {
+        use super::super::{selected_question_by_idx, QUESTIONS};
+
+        #[test]
+        fn returns_none_when_selection_is_none() {
+            assert!(selected_question_by_idx(None).is_none());
+        }
+
+        #[test]
+        fn returns_question_when_index_is_in_range() {
+            let question = selected_question_by_idx(Some(0)).expect("question should exist");
+            assert_eq!(question.id, 1);
+            assert_eq!(question.question, "太陽から一番近い惑星は？");
+        }
+
+        #[test]
+        fn returns_none_when_index_is_out_of_range() {
+            assert!(selected_question_by_idx(Some(usize::MAX)).is_none());
+            assert!(selected_question_by_idx(Some(QUESTIONS.len())).is_none());
+        }
+    }
+
+    mod confirm_round_logic_tests {
+        use super::super::{evaluate_confirm_round, Screen};
+
+        #[test]
+        fn returns_none_when_no_question_selected() {
+            let answers = vec!["水星".to_string(), "すいせい".to_string()];
+            let update = evaluate_confirm_round(2, None, &answers, 0, 0, &[]);
+            assert!(update.is_none());
+        }
+
+        #[test]
+        fn debug_force_clear_takes_priority() {
+            let answers = vec!["ろ".to_string(), "で".to_string()];
+            let update = evaluate_confirm_round(2, Some(0), &answers, 4, 1, &[1, 2])
+                .expect("debug update should be returned");
+
+            assert_eq!(update.round_result, Some(true));
+            assert_eq!(update.success_streak, 4);
+            assert_eq!(update.current_player, 1);
+            assert_eq!(update.answered_questions, vec![1, 2]);
+            assert_eq!(update.screen, Screen::Clear);
+            assert!(!update.should_reset_round_inputs);
+        }
+
+        #[test]
+        fn all_correct_moves_to_next_player_and_keeps_playing() {
+            let answers = vec!["水星".to_string(), "スイセイ".to_string()];
+            let update = evaluate_confirm_round(3, Some(0), &answers, 2, 1, &[10, 11])
+                .expect("round update should be returned");
+
+            assert_eq!(update.round_result, Some(true));
+            assert_eq!(update.success_streak, 3);
+            assert_eq!(update.current_player, 2);
+            assert_eq!(update.answered_questions, vec![10, 11, 1]);
+            assert_eq!(update.screen, Screen::GameSelect);
+            assert!(update.should_reset_round_inputs);
+        }
+
+        #[test]
+        fn all_correct_reaching_five_transitions_to_clear() {
+            let answers = vec!["水星".to_string()];
+            let update = evaluate_confirm_round(5, Some(0), &answers, 4, 3, &[1, 2, 3, 4])
+                .expect("round update should be returned");
+
+            assert_eq!(update.round_result, Some(true));
+            assert_eq!(update.success_streak, 5);
+            assert_eq!(update.current_player, 3);
+            assert_eq!(update.answered_questions, vec![1, 2, 3, 4, 1]);
+            assert_eq!(update.screen, Screen::Clear);
+            assert!(!update.should_reset_round_inputs);
+        }
+
+        #[test]
+        fn any_incorrect_answer_resets_progress() {
+            let answers = vec!["水星".to_string(), "金星".to_string()];
+            let update = evaluate_confirm_round(2, Some(0), &answers, 3, 1, &[7, 8, 9])
+                .expect("round update should be returned");
+
+            assert_eq!(update.round_result, Some(false));
+            assert_eq!(update.success_streak, 0);
+            assert_eq!(update.current_player, 0);
+            assert!(update.answered_questions.is_empty());
+            assert_eq!(update.screen, Screen::GameSelect);
+            assert!(update.should_reset_round_inputs);
         }
     }
 
