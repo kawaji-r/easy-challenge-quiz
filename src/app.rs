@@ -588,6 +588,22 @@ fn player_name_or_default(player_names: &[String], index: usize) -> String {
         .unwrap_or_else(|| default_player_name(index))
 }
 
+fn init_answers(player_count: usize) -> Vec<String> {
+    vec![String::new(); player_count]
+}
+
+fn is_all_answered(answers: &[String], player_count: usize) -> bool {
+    answers.len() == player_count && answers.iter().all(|a| !a.trim().is_empty())
+}
+
+fn next_player_index(current_player: usize, player_count: usize) -> usize {
+    if player_count == 0 {
+        0
+    } else {
+        (current_player + 1) % player_count
+    }
+}
+
 fn normalize_answer(answer: &str) -> String {
     let normalized = answer
         .nfkc()
@@ -665,8 +681,7 @@ pub fn App() -> impl IntoView {
     let all_answered = move || {
         let player_total = player_count.get();
         let current_answers = answers.get();
-        current_answers.len() == player_total
-            && current_answers.iter().all(|a| !a.trim().is_empty())
+        is_all_answered(&current_answers, player_total)
     };
 
     // 「結果を確定」ボタンを押したときの処理
@@ -695,7 +710,10 @@ pub fn App() -> impl IntoView {
                 return;
             }
 
-            let next_player = (current_player.get_untracked() + 1) % player_count.get_untracked();
+            let next_player = next_player_index(
+                current_player.get_untracked(),
+                player_count.get_untracked(),
+            );
             set_current_player.set(next_player);
         } else {
             set_success_streak.set(0);
@@ -914,10 +932,10 @@ pub fn App() -> impl IntoView {
                                                                                 .set(Some((q.id - 1) as usize));
                                                                             set_answers
                                                                                 .set(
-                                                                                    vec![
-                                                                                        String::new();
-                                                                                        player_count.get_untracked()
-                                                                                    ],
+                                                                                    init_answers(
+                                                                                        player_count
+                                                                                            .get_untracked(),
+                                                                                    ),
                                                                                 );
                                                                             set_round_result.set(None);
                                                                             set_screen.set(Screen::GameAnswerList);
@@ -1338,6 +1356,52 @@ mod tests {
         fn player_name_or_default_returns_default_when_missing() {
             let names = vec!["Alice".to_string()];
             assert_eq!(player_name_or_default(&names, 2), "プレイヤー3".to_string());
+        }
+    }
+
+    mod player_count_logic_tests {
+        use super::super::{init_answers, is_all_answered, next_player_index};
+
+        #[test]
+        fn init_answers_creates_slots_for_player_count() {
+            let answers = init_answers(4);
+            assert_eq!(answers.len(), 4);
+            assert!(answers.iter().all(|a| a.is_empty()));
+        }
+
+        #[test]
+        fn is_all_answered_returns_true_when_every_player_has_non_blank_answer() {
+            let answers = vec![
+                "東京".to_string(),
+                "パリ".to_string(),
+                "ローマ".to_string(),
+            ];
+            assert!(is_all_answered(&answers, 3));
+        }
+
+        #[test]
+        fn is_all_answered_returns_false_when_player_count_does_not_match() {
+            let answers = vec!["東京".to_string(), "パリ".to_string()];
+            assert!(!is_all_answered(&answers, 3));
+        }
+
+        #[test]
+        fn is_all_answered_returns_false_when_any_answer_is_blank() {
+            let answers = vec!["東京".to_string(), "   ".to_string(), "ローマ".to_string()];
+            assert!(!is_all_answered(&answers, 3));
+        }
+
+        #[test]
+        fn next_player_index_rotates_within_player_count() {
+            assert_eq!(next_player_index(0, 5), 1);
+            assert_eq!(next_player_index(3, 5), 4);
+            assert_eq!(next_player_index(4, 5), 0);
+        }
+
+        #[test]
+        fn next_player_index_handles_zero_player_count_safely() {
+            assert_eq!(next_player_index(0, 0), 0);
+            assert_eq!(next_player_index(3, 0), 0);
         }
     }
 }
