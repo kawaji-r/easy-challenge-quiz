@@ -15,3 +15,7 @@ env -u NO_COLOR cargo tauri android build --debug --apk --target aarch64
 ```
 
 If `NO_COLOR=1` is set in your environment, `trunk build` may fail, so run with `env -u NO_COLOR` as shown above.
+
+## Architecture
+
+- [Frontend/Backend 責務分担ガイド](docs/frontend-backend-boundary.md)
