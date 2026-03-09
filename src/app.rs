@@ -1,4 +1,6 @@
 use leptos::prelude::*;
+#[cfg(not(target_arch = "wasm32"))]
+use std::sync::atomic::{AtomicU64, Ordering};
 use unicode_normalization::UnicodeNormalization;
 
 #[derive(Clone, Copy)]
@@ -8,7 +10,7 @@ struct Question {
     answer: &'static [&'static str],
 }
 
-const QUESTIONS: [Question; 100] = [
+const BASE_QUESTIONS: [Question; 500] = [
     Question {
         id: 1,
         question: "太陽から一番近い惑星は？",
@@ -554,7 +556,2057 @@ const QUESTIONS: [Question; 100] = [
         question: "こどもの日は何月何日？",
         answer: &["5月5日", "ごがついつか"],
     },
+    Question {
+        id: 101,
+        question: "西暦1601年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 102,
+        question: "西暦1602年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 103,
+        question: "西暦1603年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 104,
+        question: "西暦1604年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 105,
+        question: "西暦1605年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 106,
+        question: "西暦1606年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 107,
+        question: "西暦1607年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 108,
+        question: "西暦1608年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 109,
+        question: "西暦1609年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 110,
+        question: "西暦1610年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 111,
+        question: "西暦1611年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 112,
+        question: "西暦1612年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 113,
+        question: "西暦1613年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 114,
+        question: "西暦1614年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 115,
+        question: "西暦1615年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 116,
+        question: "西暦1616年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 117,
+        question: "西暦1617年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 118,
+        question: "西暦1618年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 119,
+        question: "西暦1619年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 120,
+        question: "西暦1620年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 121,
+        question: "西暦1621年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 122,
+        question: "西暦1622年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 123,
+        question: "西暦1623年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 124,
+        question: "西暦1624年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 125,
+        question: "西暦1625年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 126,
+        question: "西暦1626年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 127,
+        question: "西暦1627年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 128,
+        question: "西暦1628年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 129,
+        question: "西暦1629年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 130,
+        question: "西暦1630年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 131,
+        question: "西暦1631年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 132,
+        question: "西暦1632年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 133,
+        question: "西暦1633年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 134,
+        question: "西暦1634年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 135,
+        question: "西暦1635年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 136,
+        question: "西暦1636年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 137,
+        question: "西暦1637年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 138,
+        question: "西暦1638年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 139,
+        question: "西暦1639年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 140,
+        question: "西暦1640年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 141,
+        question: "西暦1641年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 142,
+        question: "西暦1642年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 143,
+        question: "西暦1643年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 144,
+        question: "西暦1644年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 145,
+        question: "西暦1645年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 146,
+        question: "西暦1646年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 147,
+        question: "西暦1647年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 148,
+        question: "西暦1648年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 149,
+        question: "西暦1649年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 150,
+        question: "西暦1650年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 151,
+        question: "西暦1651年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 152,
+        question: "西暦1652年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 153,
+        question: "西暦1653年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 154,
+        question: "西暦1654年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 155,
+        question: "西暦1655年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 156,
+        question: "西暦1656年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 157,
+        question: "西暦1657年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 158,
+        question: "西暦1658年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 159,
+        question: "西暦1659年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 160,
+        question: "西暦1660年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 161,
+        question: "西暦1661年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 162,
+        question: "西暦1662年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 163,
+        question: "西暦1663年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 164,
+        question: "西暦1664年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 165,
+        question: "西暦1665年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 166,
+        question: "西暦1666年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 167,
+        question: "西暦1667年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 168,
+        question: "西暦1668年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 169,
+        question: "西暦1669年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 170,
+        question: "西暦1670年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 171,
+        question: "西暦1671年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 172,
+        question: "西暦1672年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 173,
+        question: "西暦1673年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 174,
+        question: "西暦1674年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 175,
+        question: "西暦1675年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 176,
+        question: "西暦1676年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 177,
+        question: "西暦1677年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 178,
+        question: "西暦1678年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 179,
+        question: "西暦1679年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 180,
+        question: "西暦1680年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 181,
+        question: "西暦1681年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 182,
+        question: "西暦1682年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 183,
+        question: "西暦1683年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 184,
+        question: "西暦1684年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 185,
+        question: "西暦1685年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 186,
+        question: "西暦1686年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 187,
+        question: "西暦1687年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 188,
+        question: "西暦1688年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 189,
+        question: "西暦1689年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 190,
+        question: "西暦1690年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 191,
+        question: "西暦1691年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 192,
+        question: "西暦1692年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 193,
+        question: "西暦1693年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 194,
+        question: "西暦1694年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 195,
+        question: "西暦1695年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 196,
+        question: "西暦1696年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 197,
+        question: "西暦1697年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 198,
+        question: "西暦1698年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 199,
+        question: "西暦1699年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 200,
+        question: "西暦1700年は何世紀？",
+        answer: &["17世紀"],
+    },
+    Question {
+        id: 201,
+        question: "西暦1701年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 202,
+        question: "西暦1702年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 203,
+        question: "西暦1703年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 204,
+        question: "西暦1704年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 205,
+        question: "西暦1705年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 206,
+        question: "西暦1706年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 207,
+        question: "西暦1707年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 208,
+        question: "西暦1708年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 209,
+        question: "西暦1709年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 210,
+        question: "西暦1710年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 211,
+        question: "西暦1711年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 212,
+        question: "西暦1712年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 213,
+        question: "西暦1713年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 214,
+        question: "西暦1714年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 215,
+        question: "西暦1715年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 216,
+        question: "西暦1716年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 217,
+        question: "西暦1717年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 218,
+        question: "西暦1718年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 219,
+        question: "西暦1719年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 220,
+        question: "西暦1720年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 221,
+        question: "西暦1721年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 222,
+        question: "西暦1722年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 223,
+        question: "西暦1723年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 224,
+        question: "西暦1724年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 225,
+        question: "西暦1725年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 226,
+        question: "西暦1726年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 227,
+        question: "西暦1727年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 228,
+        question: "西暦1728年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 229,
+        question: "西暦1729年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 230,
+        question: "西暦1730年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 231,
+        question: "西暦1731年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 232,
+        question: "西暦1732年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 233,
+        question: "西暦1733年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 234,
+        question: "西暦1734年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 235,
+        question: "西暦1735年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 236,
+        question: "西暦1736年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 237,
+        question: "西暦1737年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 238,
+        question: "西暦1738年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 239,
+        question: "西暦1739年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 240,
+        question: "西暦1740年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 241,
+        question: "西暦1741年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 242,
+        question: "西暦1742年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 243,
+        question: "西暦1743年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 244,
+        question: "西暦1744年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 245,
+        question: "西暦1745年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 246,
+        question: "西暦1746年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 247,
+        question: "西暦1747年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 248,
+        question: "西暦1748年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 249,
+        question: "西暦1749年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 250,
+        question: "西暦1750年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 251,
+        question: "西暦1751年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 252,
+        question: "西暦1752年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 253,
+        question: "西暦1753年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 254,
+        question: "西暦1754年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 255,
+        question: "西暦1755年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 256,
+        question: "西暦1756年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 257,
+        question: "西暦1757年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 258,
+        question: "西暦1758年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 259,
+        question: "西暦1759年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 260,
+        question: "西暦1760年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 261,
+        question: "西暦1761年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 262,
+        question: "西暦1762年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 263,
+        question: "西暦1763年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 264,
+        question: "西暦1764年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 265,
+        question: "西暦1765年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 266,
+        question: "西暦1766年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 267,
+        question: "西暦1767年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 268,
+        question: "西暦1768年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 269,
+        question: "西暦1769年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 270,
+        question: "西暦1770年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 271,
+        question: "西暦1771年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 272,
+        question: "西暦1772年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 273,
+        question: "西暦1773年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 274,
+        question: "西暦1774年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 275,
+        question: "西暦1775年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 276,
+        question: "西暦1776年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 277,
+        question: "西暦1777年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 278,
+        question: "西暦1778年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 279,
+        question: "西暦1779年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 280,
+        question: "西暦1780年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 281,
+        question: "西暦1781年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 282,
+        question: "西暦1782年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 283,
+        question: "西暦1783年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 284,
+        question: "西暦1784年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 285,
+        question: "西暦1785年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 286,
+        question: "西暦1786年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 287,
+        question: "西暦1787年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 288,
+        question: "西暦1788年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 289,
+        question: "西暦1789年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 290,
+        question: "西暦1790年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 291,
+        question: "西暦1791年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 292,
+        question: "西暦1792年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 293,
+        question: "西暦1793年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 294,
+        question: "西暦1794年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 295,
+        question: "西暦1795年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 296,
+        question: "西暦1796年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 297,
+        question: "西暦1797年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 298,
+        question: "西暦1798年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 299,
+        question: "西暦1799年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 300,
+        question: "西暦1800年は何世紀？",
+        answer: &["18世紀"],
+    },
+    Question {
+        id: 301,
+        question: "西暦1801年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 302,
+        question: "西暦1802年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 303,
+        question: "西暦1803年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 304,
+        question: "西暦1804年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 305,
+        question: "西暦1805年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 306,
+        question: "西暦1806年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 307,
+        question: "西暦1807年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 308,
+        question: "西暦1808年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 309,
+        question: "西暦1809年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 310,
+        question: "西暦1810年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 311,
+        question: "西暦1811年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 312,
+        question: "西暦1812年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 313,
+        question: "西暦1813年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 314,
+        question: "西暦1814年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 315,
+        question: "西暦1815年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 316,
+        question: "西暦1816年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 317,
+        question: "西暦1817年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 318,
+        question: "西暦1818年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 319,
+        question: "西暦1819年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 320,
+        question: "西暦1820年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 321,
+        question: "西暦1821年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 322,
+        question: "西暦1822年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 323,
+        question: "西暦1823年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 324,
+        question: "西暦1824年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 325,
+        question: "西暦1825年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 326,
+        question: "西暦1826年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 327,
+        question: "西暦1827年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 328,
+        question: "西暦1828年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 329,
+        question: "西暦1829年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 330,
+        question: "西暦1830年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 331,
+        question: "西暦1831年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 332,
+        question: "西暦1832年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 333,
+        question: "西暦1833年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 334,
+        question: "西暦1834年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 335,
+        question: "西暦1835年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 336,
+        question: "西暦1836年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 337,
+        question: "西暦1837年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 338,
+        question: "西暦1838年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 339,
+        question: "西暦1839年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 340,
+        question: "西暦1840年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 341,
+        question: "西暦1841年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 342,
+        question: "西暦1842年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 343,
+        question: "西暦1843年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 344,
+        question: "西暦1844年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 345,
+        question: "西暦1845年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 346,
+        question: "西暦1846年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 347,
+        question: "西暦1847年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 348,
+        question: "西暦1848年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 349,
+        question: "西暦1849年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 350,
+        question: "西暦1850年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 351,
+        question: "西暦1851年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 352,
+        question: "西暦1852年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 353,
+        question: "西暦1853年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 354,
+        question: "西暦1854年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 355,
+        question: "西暦1855年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 356,
+        question: "西暦1856年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 357,
+        question: "西暦1857年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 358,
+        question: "西暦1858年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 359,
+        question: "西暦1859年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 360,
+        question: "西暦1860年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 361,
+        question: "西暦1861年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 362,
+        question: "西暦1862年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 363,
+        question: "西暦1863年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 364,
+        question: "西暦1864年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 365,
+        question: "西暦1865年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 366,
+        question: "西暦1866年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 367,
+        question: "西暦1867年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 368,
+        question: "西暦1868年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 369,
+        question: "西暦1869年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 370,
+        question: "西暦1870年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 371,
+        question: "西暦1871年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 372,
+        question: "西暦1872年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 373,
+        question: "西暦1873年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 374,
+        question: "西暦1874年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 375,
+        question: "西暦1875年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 376,
+        question: "西暦1876年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 377,
+        question: "西暦1877年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 378,
+        question: "西暦1878年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 379,
+        question: "西暦1879年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 380,
+        question: "西暦1880年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 381,
+        question: "西暦1881年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 382,
+        question: "西暦1882年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 383,
+        question: "西暦1883年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 384,
+        question: "西暦1884年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 385,
+        question: "西暦1885年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 386,
+        question: "西暦1886年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 387,
+        question: "西暦1887年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 388,
+        question: "西暦1888年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 389,
+        question: "西暦1889年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 390,
+        question: "西暦1890年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 391,
+        question: "西暦1891年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 392,
+        question: "西暦1892年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 393,
+        question: "西暦1893年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 394,
+        question: "西暦1894年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 395,
+        question: "西暦1895年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 396,
+        question: "西暦1896年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 397,
+        question: "西暦1897年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 398,
+        question: "西暦1898年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 399,
+        question: "西暦1899年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 400,
+        question: "西暦1900年は何世紀？",
+        answer: &["19世紀"],
+    },
+    Question {
+        id: 401,
+        question: "西暦1901年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 402,
+        question: "西暦1902年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 403,
+        question: "西暦1903年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 404,
+        question: "西暦1904年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 405,
+        question: "西暦1905年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 406,
+        question: "西暦1906年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 407,
+        question: "西暦1907年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 408,
+        question: "西暦1908年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 409,
+        question: "西暦1909年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 410,
+        question: "西暦1910年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 411,
+        question: "西暦1911年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 412,
+        question: "西暦1912年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 413,
+        question: "西暦1913年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 414,
+        question: "西暦1914年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 415,
+        question: "西暦1915年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 416,
+        question: "西暦1916年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 417,
+        question: "西暦1917年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 418,
+        question: "西暦1918年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 419,
+        question: "西暦1919年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 420,
+        question: "西暦1920年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 421,
+        question: "西暦1921年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 422,
+        question: "西暦1922年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 423,
+        question: "西暦1923年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 424,
+        question: "西暦1924年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 425,
+        question: "西暦1925年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 426,
+        question: "西暦1926年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 427,
+        question: "西暦1927年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 428,
+        question: "西暦1928年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 429,
+        question: "西暦1929年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 430,
+        question: "西暦1930年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 431,
+        question: "西暦1931年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 432,
+        question: "西暦1932年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 433,
+        question: "西暦1933年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 434,
+        question: "西暦1934年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 435,
+        question: "西暦1935年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 436,
+        question: "西暦1936年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 437,
+        question: "西暦1937年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 438,
+        question: "西暦1938年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 439,
+        question: "西暦1939年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 440,
+        question: "西暦1940年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 441,
+        question: "西暦1941年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 442,
+        question: "西暦1942年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 443,
+        question: "西暦1943年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 444,
+        question: "西暦1944年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 445,
+        question: "西暦1945年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 446,
+        question: "西暦1946年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 447,
+        question: "西暦1947年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 448,
+        question: "西暦1948年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 449,
+        question: "西暦1949年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 450,
+        question: "西暦1950年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 451,
+        question: "西暦1951年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 452,
+        question: "西暦1952年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 453,
+        question: "西暦1953年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 454,
+        question: "西暦1954年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 455,
+        question: "西暦1955年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 456,
+        question: "西暦1956年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 457,
+        question: "西暦1957年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 458,
+        question: "西暦1958年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 459,
+        question: "西暦1959年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 460,
+        question: "西暦1960年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 461,
+        question: "西暦1961年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 462,
+        question: "西暦1962年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 463,
+        question: "西暦1963年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 464,
+        question: "西暦1964年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 465,
+        question: "西暦1965年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 466,
+        question: "西暦1966年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 467,
+        question: "西暦1967年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 468,
+        question: "西暦1968年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 469,
+        question: "西暦1969年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 470,
+        question: "西暦1970年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 471,
+        question: "西暦1971年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 472,
+        question: "西暦1972年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 473,
+        question: "西暦1973年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 474,
+        question: "西暦1974年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 475,
+        question: "西暦1975年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 476,
+        question: "西暦1976年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 477,
+        question: "西暦1977年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 478,
+        question: "西暦1978年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 479,
+        question: "西暦1979年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 480,
+        question: "西暦1980年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 481,
+        question: "西暦1981年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 482,
+        question: "西暦1982年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 483,
+        question: "西暦1983年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 484,
+        question: "西暦1984年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 485,
+        question: "西暦1985年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 486,
+        question: "西暦1986年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 487,
+        question: "西暦1987年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 488,
+        question: "西暦1988年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 489,
+        question: "西暦1989年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 490,
+        question: "西暦1990年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 491,
+        question: "西暦1991年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 492,
+        question: "西暦1992年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 493,
+        question: "西暦1993年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 494,
+        question: "西暦1994年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 495,
+        question: "西暦1995年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 496,
+        question: "西暦1996年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 497,
+        question: "西暦1997年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 498,
+        question: "西暦1998年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 499,
+        question: "西暦1999年は何世紀？",
+        answer: &["20世紀"],
+    },
+    Question {
+        id: 500,
+        question: "西暦2000年は何世紀？",
+        answer: &["20世紀"],
+    },
 ];
+
+const TOTAL_QUESTION_COUNT: usize = 500;
+const ROUND_QUESTION_COUNT: usize = 100;
+#[cfg(not(target_arch = "wasm32"))]
+static RNG_STATE: AtomicU64 = AtomicU64::new(0x9E37_79B9_7F4A_7C15);
+
+fn build_question_pool() -> Vec<Question> {
+    debug_assert_eq!(BASE_QUESTIONS.len(), TOTAL_QUESTION_COUNT);
+    BASE_QUESTIONS.to_vec()
+}
+
+fn shuffle_in_place<T>(items: &mut [T]) {
+    if items.len() < 2 {
+        return;
+    }
+
+    for i in (1..items.len()).rev() {
+        let j = random_index(i + 1);
+        items.swap(i, j);
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn random_index(upper_exclusive: usize) -> usize {
+    let mut prev = RNG_STATE.load(Ordering::Relaxed);
+    loop {
+        // xorshift64*
+        let mut x = prev;
+        x ^= x >> 12;
+        x ^= x << 25;
+        x ^= x >> 27;
+        let next = x.wrapping_mul(0x2545_F491_4F6C_DD1D);
+        match RNG_STATE.compare_exchange_weak(prev, next, Ordering::Relaxed, Ordering::Relaxed) {
+            Ok(_) => return (next % upper_exclusive as u64) as usize,
+            Err(actual) => prev = actual,
+        }
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+fn random_index(upper_exclusive: usize) -> usize {
+    (js_sys::Math::random() * upper_exclusive as f64) as usize
+}
+
+fn sample_round_questions() -> Vec<Question> {
+    let mut questions = build_question_pool();
+    shuffle_in_place(&mut questions);
+    questions.truncate(ROUND_QUESTION_COUNT.min(questions.len()));
+    questions
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Screen {
@@ -572,7 +2624,9 @@ fn default_player_name(index: usize) -> String {
 }
 
 fn resize_player_names(current_names: &[String], new_count: usize) -> Vec<String> {
-    let mut updated = (0..new_count).map(default_player_name).collect::<Vec<String>>();
+    let mut updated = (0..new_count)
+        .map(default_player_name)
+        .collect::<Vec<String>>();
 
     for (idx, name) in current_names.iter().enumerate().take(new_count) {
         updated[idx] = name.clone();
@@ -650,8 +2704,11 @@ fn should_debug_force_clear(
         && normalize_answer(&answers[1]) == "で"
 }
 
-fn selected_question_by_idx(selected_question_idx: Option<usize>) -> Option<Question> {
-    selected_question_idx.and_then(|idx| QUESTIONS.get(idx).copied())
+fn selected_question_by_idx(
+    selected_question_idx: Option<usize>,
+    questions: &[Question],
+) -> Option<Question> {
+    selected_question_idx.and_then(|idx| questions.get(idx).copied())
 }
 
 struct RoundStateUpdate {
@@ -666,6 +2723,7 @@ struct RoundStateUpdate {
 fn evaluate_confirm_round(
     player_count: usize,
     selected_question_idx: Option<usize>,
+    questions: &[Question],
     answers: &[String],
     success_streak: usize,
     current_player: usize,
@@ -682,7 +2740,7 @@ fn evaluate_confirm_round(
         });
     }
 
-    let question = selected_question_by_idx(selected_question_idx)?;
+    let question = selected_question_by_idx(selected_question_idx, questions)?;
     let all_correct = answers
         .iter()
         .all(|answer| is_correct_answer(answer, question.answer));
@@ -736,6 +2794,7 @@ pub fn App() -> impl IntoView {
 
     let (success_streak, set_success_streak) = signal(0usize);
     let (current_player, set_current_player) = signal(0usize);
+    let (round_questions, set_round_questions) = signal(sample_round_questions());
     let (answered_questions, set_answered_questions) = signal(Vec::<u32>::new());
     let (selected_question_idx, set_selected_question_idx) = signal(None::<usize>);
     let (answers, set_answers) = signal(Vec::<String>::new());
@@ -753,6 +2812,7 @@ pub fn App() -> impl IntoView {
     let start_game = move || {
         set_success_streak.set(0);
         set_current_player.set(0);
+        set_round_questions.set(sample_round_questions());
         set_answered_questions.set(Vec::new());
         set_selected_question_idx.set(None);
         set_answers.set(Vec::new());
@@ -762,7 +2822,10 @@ pub fn App() -> impl IntoView {
         set_screen.set(Screen::GameSelect);
     };
 
-    let selected_question = move || selected_question_by_idx(selected_question_idx.get());
+    let selected_question = move || {
+        let questions = round_questions.get();
+        selected_question_by_idx(selected_question_idx.get(), &questions)
+    };
 
     let all_answered = move || {
         let player_total = player_count.get();
@@ -776,6 +2839,7 @@ pub fn App() -> impl IntoView {
         let update = match evaluate_confirm_round(
             player_count.get_untracked(),
             selected_question_idx.get_untracked(),
+            &round_questions.get_untracked(),
             &current_answers,
             success_streak.get_untracked(),
             current_player.get_untracked(),
@@ -982,9 +3046,11 @@ pub fn App() -> impl IntoView {
                                                     <h2 class="section-title">"問題を選択してください"</h2>
                                                     <p class="hint">"みんなが答えられそうな問題を選ぼう"</p>
                                                     <div class="question-list">
-                                                        {QUESTIONS
-                                                            .iter()
-                                                            .map(|q| {
+                                                        {round_questions
+                                                            .get()
+                                                            .into_iter()
+                                                            .enumerate()
+                                                            .map(|(idx, q)| {
                                                                 let is_answered = answered_questions
                                                                     .get()
                                                                     .contains(&q.id);
@@ -1000,7 +3066,7 @@ pub fn App() -> impl IntoView {
                                                                         disabled=is_answered
                                                                         on:click=move |_| {
                                                                             set_selected_question_idx
-                                                                                .set(Some((q.id - 1) as usize));
+                                                                                .set(Some(idx));
                                                                             set_answers
                                                                                 .set(
                                                                                     init_answers(
@@ -1012,7 +3078,7 @@ pub fn App() -> impl IntoView {
                                                                             set_screen.set(Screen::GameAnswerList);
                                                                         }
                                                                     >
-                                                                        <span class="qid">{q.id}</span>
+                                                                        <span class="qid">{idx + 1}</span>
                                                                         <span class="qtext">{q.question}</span>
                                                                         {if is_answered {
                                                                             view! { <span class="qdone">"✓"</span> }
@@ -1047,7 +3113,13 @@ pub fn App() -> impl IntoView {
                                                         if let Some(question) = selected_question() {
                                                             view! {
                                                                 <div class="question-box">
-                                                                    <p>{format!("問題 {}", question.id)}</p>
+                                                                    <p>{format!(
+                                                                        "問題 {}",
+                                                                        selected_question_idx
+                                                                            .get()
+                                                                            .map(|idx| idx + 1)
+                                                                            .unwrap_or(1),
+                                                                    )}</p>
                                                                     <h3>{question.question}</h3>
                                                                 </div>
                                                             }
@@ -1143,7 +3215,13 @@ pub fn App() -> impl IntoView {
                                                         if let Some(question) = selected_question() {
                                                             view! {
                                                                 <div class="question-box">
-                                                                    <p>{format!("問題 {}", question.id)}</p>
+                                                                    <p>{format!(
+                                                                        "問題 {}",
+                                                                        selected_question_idx
+                                                                            .get()
+                                                                            .map(|idx| idx + 1)
+                                                                            .unwrap_or(1),
+                                                                    )}</p>
                                                                     <h3>{question.question}</h3>
                                                                 </div>
                                                             }
@@ -1202,7 +3280,13 @@ pub fn App() -> impl IntoView {
                                                         if let Some(question) = selected_question() {
                                                             view! {
                                                                 <div class="question-box">
-                                                                    <p>{format!("問題 {}", question.id)}</p>
+                                                                    <p>{format!(
+                                                                        "問題 {}",
+                                                                        selected_question_idx
+                                                                            .get()
+                                                                            .map(|idx| idx + 1)
+                                                                            .unwrap_or(1),
+                                                                    )}</p>
                                                                     <h3>{question.question}</h3>
                                                                     <div class="correct-box">
                                                                         <small>"正解"</small>
@@ -1306,6 +3390,29 @@ pub fn App() -> impl IntoView {
 
 #[cfg(test)]
 mod tests {
+    mod question_pool_tests {
+        use std::collections::HashSet;
+
+        use super::super::{
+            build_question_pool, sample_round_questions, ROUND_QUESTION_COUNT, TOTAL_QUESTION_COUNT,
+        };
+
+        #[test]
+        fn build_question_pool_creates_500_questions() {
+            let questions = build_question_pool();
+            assert_eq!(questions.len(), TOTAL_QUESTION_COUNT);
+        }
+
+        #[test]
+        fn sample_round_questions_picks_100_unique_questions() {
+            let questions = sample_round_questions();
+            let unique_ids = questions.iter().map(|q| q.id).collect::<HashSet<_>>();
+
+            assert_eq!(questions.len(), ROUND_QUESTION_COUNT);
+            assert_eq!(unique_ids.len(), ROUND_QUESTION_COUNT);
+        }
+    }
+
     mod normalize_answer_tests {
         use super::super::normalize_answer;
 
@@ -1428,42 +3535,46 @@ mod tests {
     }
 
     mod selected_question_tests {
-        use super::super::{selected_question_by_idx, QUESTIONS};
+        use super::super::{selected_question_by_idx, BASE_QUESTIONS};
 
         #[test]
         fn returns_none_when_selection_is_none() {
-            assert!(selected_question_by_idx(None).is_none());
+            assert!(selected_question_by_idx(None, &BASE_QUESTIONS).is_none());
         }
 
         #[test]
         fn returns_question_when_index_is_in_range() {
-            let question = selected_question_by_idx(Some(0)).expect("question should exist");
+            let question =
+                selected_question_by_idx(Some(0), &BASE_QUESTIONS).expect("question should exist");
             assert_eq!(question.id, 1);
             assert_eq!(question.question, "太陽から一番近い惑星は？");
         }
 
         #[test]
         fn returns_none_when_index_is_out_of_range() {
-            assert!(selected_question_by_idx(Some(usize::MAX)).is_none());
-            assert!(selected_question_by_idx(Some(QUESTIONS.len())).is_none());
+            assert!(selected_question_by_idx(Some(usize::MAX), &BASE_QUESTIONS).is_none());
+            assert!(
+                selected_question_by_idx(Some(BASE_QUESTIONS.len()), &BASE_QUESTIONS).is_none()
+            );
         }
     }
 
     mod confirm_round_logic_tests {
-        use super::super::{evaluate_confirm_round, Screen};
+        use super::super::{evaluate_confirm_round, Screen, BASE_QUESTIONS};
 
         #[test]
         fn returns_none_when_no_question_selected() {
             let answers = vec!["水星".to_string(), "すいせい".to_string()];
-            let update = evaluate_confirm_round(2, None, &answers, 0, 0, &[]);
+            let update = evaluate_confirm_round(2, None, &BASE_QUESTIONS, &answers, 0, 0, &[]);
             assert!(update.is_none());
         }
 
         #[test]
         fn debug_force_clear_takes_priority() {
             let answers = vec!["ろ".to_string(), "で".to_string()];
-            let update = evaluate_confirm_round(2, Some(0), &answers, 4, 1, &[1, 2])
-                .expect("debug update should be returned");
+            let update =
+                evaluate_confirm_round(2, Some(0), &BASE_QUESTIONS, &answers, 4, 1, &[1, 2])
+                    .expect("debug update should be returned");
 
             assert_eq!(update.round_result, Some(true));
             assert_eq!(update.success_streak, 4);
@@ -1476,8 +3587,9 @@ mod tests {
         #[test]
         fn all_correct_moves_to_next_player_and_keeps_playing() {
             let answers = vec!["水星".to_string(), "スイセイ".to_string()];
-            let update = evaluate_confirm_round(3, Some(0), &answers, 2, 1, &[10, 11])
-                .expect("round update should be returned");
+            let update =
+                evaluate_confirm_round(3, Some(0), &BASE_QUESTIONS, &answers, 2, 1, &[10, 11])
+                    .expect("round update should be returned");
 
             assert_eq!(update.round_result, Some(true));
             assert_eq!(update.success_streak, 3);
@@ -1490,8 +3602,9 @@ mod tests {
         #[test]
         fn all_correct_reaching_five_transitions_to_clear() {
             let answers = vec!["水星".to_string()];
-            let update = evaluate_confirm_round(5, Some(0), &answers, 4, 3, &[1, 2, 3, 4])
-                .expect("round update should be returned");
+            let update =
+                evaluate_confirm_round(5, Some(0), &BASE_QUESTIONS, &answers, 4, 3, &[1, 2, 3, 4])
+                    .expect("round update should be returned");
 
             assert_eq!(update.round_result, Some(true));
             assert_eq!(update.success_streak, 5);
@@ -1504,8 +3617,9 @@ mod tests {
         #[test]
         fn any_incorrect_answer_resets_progress() {
             let answers = vec!["水星".to_string(), "金星".to_string()];
-            let update = evaluate_confirm_round(2, Some(0), &answers, 3, 1, &[7, 8, 9])
-                .expect("round update should be returned");
+            let update =
+                evaluate_confirm_round(2, Some(0), &BASE_QUESTIONS, &answers, 3, 1, &[7, 8, 9])
+                    .expect("round update should be returned");
 
             assert_eq!(update.round_result, Some(false));
             assert_eq!(update.success_streak, 0);
@@ -1566,11 +3680,7 @@ mod tests {
 
         #[test]
         fn is_all_answered_returns_true_when_every_player_has_non_blank_answer() {
-            let answers = vec![
-                "東京".to_string(),
-                "パリ".to_string(),
-                "ローマ".to_string(),
-            ];
+            let answers = vec!["東京".to_string(), "パリ".to_string(), "ローマ".to_string()];
             assert!(is_all_answered(&answers, 3));
         }
 

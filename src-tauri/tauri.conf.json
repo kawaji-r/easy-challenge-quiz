@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "identifier": "com.rivers-style.easy-challenge-quiz",
   "build": {
-    "beforeDevCommand": "trunk serve",
+    "beforeDevCommand": "env -u NO_COLOR trunk serve",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "trunk build",
+    "beforeBuildCommand": "env -u NO_COLOR trunk build",
     "frontendDist": "../dist"
   },
   "app": {
